@@ -41,13 +41,13 @@ public class ItemController {
 
     @GetMapping
     List<ItemDto> getItem(@RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Получен запрос GET на получение всех вещей пользователя - {}");
+        log.info("Получен запрос GET на получение всех вещей пользователя - {}", userId);
         return itemService.getAllItems(userId);
     }
 
     @GetMapping(value = "/search")
     public List<ItemDto> findItemFromAvailable(@RequestParam(name = "text") String text) {
-        log.info("Получен запрос GET на получение всех вещей по тексту - {}");
+        log.info("Получен запрос GET на получение всех вещей по тексту - {}",text);
         if (text.isBlank()) {
             return new ArrayList<>();
         }

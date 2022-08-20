@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
@@ -36,8 +35,7 @@ public class UserController {
     public UserDto update(@PathVariable long userId,
                           @Validated({Update.class}) @RequestBody UserDto user) {
         log.info("Запрос PATCH на обновление пользователя {}, id {}, email {} ", user.getName(), user.getId(), user.getEmail());
-        UserDto updateUser = userService.update(user,userId);
-        return updateUser;
+        return userService.update(user,userId);
     }
 
     @DeleteMapping("{userId}")

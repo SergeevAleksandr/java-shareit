@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
         User user = checkUser(userId);
         Item updateItem = itemRepository.getItemById(itemId).orElseThrow(() ->
                 new NotFoundException("Вещь не найдена"));
-        if (updateItem.getOwner().getId() != user.getId()) {
+        if (!updateItem.getOwner().getId().equals(user.getId())) {
             throw  new NotFoundException("Чужая вещь не можеть быть обновлена");
         }
         if (item.getName() != null) {
