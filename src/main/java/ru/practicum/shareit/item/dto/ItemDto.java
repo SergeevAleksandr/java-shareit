@@ -6,11 +6,9 @@ import ru.practicum.shareit.Create;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
 public class ItemDto {
     private Long id;
     @NotBlank(groups = {Create.class})

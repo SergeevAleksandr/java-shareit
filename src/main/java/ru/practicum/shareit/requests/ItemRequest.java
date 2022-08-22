@@ -5,11 +5,9 @@ import lombok.*;
 import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class ItemRequest {
     private Long id;
     private String description;
