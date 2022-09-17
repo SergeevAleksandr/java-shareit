@@ -6,12 +6,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
 import ru.practicum.shareit.Update;
+import ru.practicum.shareit.item.dto.CommentRequestDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookingDates;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("checkstyle:Regexp")
 @RequiredArgsConstructor
 @Slf4j
 @RestController
@@ -34,13 +39,14 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    ItemDto getById(@PathVariable("itemId") long itemId) {
+    ItemDtoWithBookingDates getById(@PathVariable("itemId") long itemId,
+                                    @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен запрос GET на получение вещи по id - {}", itemId);
-        return itemService.getItemById(itemId);
+        return itemService.getItemById(itemId,userId);
     }
 
     @GetMapping
-    List<ItemDto> getItem(@RequestHeader("X-Sharer-User-Id") long userId) {
+    List<ItemDtoWithBookingDates> getItem(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Получен запрос GET на получение всех вещей пользователя - {}", userId);
         return itemService.getAllItems(userId);
     }
@@ -52,5 +58,17 @@ public class ItemController {
             return new ArrayList<>();
         }
         return itemService.findItemFromAvailable(text.toLowerCase());
+    }
+
+    @PostMapping(value = "/{itemId}/comment")
+    public CommentResponseDto addComment(@RequestHeader("X-Sharer-User-Id") long userId,
+                                         @Validated({Create.class}) @RequestBody CommentRequestDto comment,
+                                         @PathVariable("itemId") long itemId) {
+        comment.setCreated(LocalDateTime.now());
+        comment.setItemId(itemId);
+        comment.setAuthorId(userId);
+        CommentResponseDto newComment = itemService.addComment(comment);
+        log.info("Добавлен комментарий - {}", newComment.getId());
+        return newComment;
     }
 }

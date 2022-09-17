@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto user) {
-        checkUserEmail(UserMapper.toUser(user));
-        return UserMapper.toUserDto(userRepository.create(UserMapper.toUser(user)));
+        //checkUserEmail(UserMapper.toUser(user));
+        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(user)));
     }
 
     @Override
@@ -34,19 +34,19 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() != null) {
             updateUser.setEmail(user.getEmail());
         }
-        userRepository.update(updateUser);
+        userRepository.save(updateUser);
         return UserMapper.toUserDto(updateUser);
     }
 
     @Override
     public UserDto getUserById(long id) {
-        return UserMapper.toUserDto(userRepository.getUserById(id).orElseThrow(() ->
+        return UserMapper.toUserDto(userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Пользователь с таким id не найден!")));
     }
 
     @Override
     public void deleteUser(long id) {
-        userRepository.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public User checkUserbyId(long id) {
-        return userRepository.getUserById(id).orElseThrow(() -> new NotFoundException("Пользователь с таким id не найден!"));
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Пользователь с таким id не найден!"));
     }
 }
