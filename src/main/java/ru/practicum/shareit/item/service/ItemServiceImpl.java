@@ -75,7 +75,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoWithBookingDates> getAllItems(long userId, Pageable pageRequest) {
-        checkUser(userId);
         return itemRepository.findOwnersItems(userId,pageRequest).stream().map(i -> convertItem(i, userId))
                 .collect(Collectors.toList());
     }
