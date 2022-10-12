@@ -5,6 +5,7 @@ import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingDates;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -36,14 +37,14 @@ public class ItemMapper {
         );
     }
 
-    public static Item toItem(ItemDto item, User owner) {
+    public static Item toItem(ItemDto item, User owner, ItemRequest request) {
         return new Item(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
                 owner,
-                null
+                request
         );
     }
 }

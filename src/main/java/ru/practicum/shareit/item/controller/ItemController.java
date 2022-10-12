@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -10,8 +11,10 @@ import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingDates;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemServiceImpl itemService;
+    private final ItemService itemService;
 
     @PostMapping
     ItemDto createItem(@Validated({Create.class}) @RequestBody ItemDto itemDto,@RequestHeader("X-Sharer-User-Id")  long userId) {
@@ -46,18 +49,26 @@ public class ItemController {
     }
 
     @GetMapping
-    List<ItemDtoWithBookingDates> getItem(@RequestHeader("X-Sharer-User-Id") long userId) {
+    List<ItemDtoWithBookingDates> getItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                                          @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос GET на получение всех вещей пользователя - {}", userId);
-        return itemService.getAllItems(userId);
+        int page = from / size;
+        final PageRequest pageRequest = PageRequest.of(page, size);
+        return itemService.getAllItems(userId,pageRequest);
     }
 
     @GetMapping(value = "/search")
-    public List<ItemDto> findItemFromAvailable(@RequestParam(name = "text") String text) {
+    public List<ItemDto> findItemFromAvailable(@RequestParam(name = "text") String text,
+                                               @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                               @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос GET на получение всех вещей по тексту - {}",text);
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemService.findItemFromAvailable(text.toLowerCase());
+        int page = from / size;
+        final PageRequest pageRequest = PageRequest.of(page, size);
+        return itemService.findItemFromAvailable(text.toLowerCase(),pageRequest);
     }
 
     @PostMapping(value = "/{itemId}/comment")
