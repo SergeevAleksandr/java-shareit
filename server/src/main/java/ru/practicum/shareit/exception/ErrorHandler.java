@@ -18,4 +18,9 @@ public class ErrorHandler {
     public ErrorResponse handleValidationException(final ValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    public ResponseEntity conflictException(final ConflictException e) {
+        return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+    }
 }
