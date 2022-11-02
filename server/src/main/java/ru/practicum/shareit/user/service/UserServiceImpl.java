@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -63,7 +62,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.findAll().stream()
                 .filter(userInList -> userInList.getEmail().equals(user.getEmail())).collect(Collectors.toList());
         if (userList.size() > 0) {
-            throw new ValidationException("Пользователь с таким email уже существует!");
+            throw new NotFoundException("Пользователь с таким email уже существует!");
         }
     }
 
